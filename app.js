@@ -42,3 +42,7 @@ db.collection("tasks")
       }
     });
   });
+
+function deleteTask(id) {
+  db.collection("tasks").doc(id).delete();
+}
