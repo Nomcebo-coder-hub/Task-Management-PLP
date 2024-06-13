@@ -20,3 +20,29 @@ function addTask() {
     taskInput.value = "";
   }
 }
+
+function renderTasks(doc) {
+  const taskList = document.getElementById("task-list");
+  const taskItem = document.createElement("li");
+  taskItem.className = "tast-item";
+  taskItem.innerHTML = `
+    <span>${doc.data().task}</span>
+    <button onclick="deleteTask('${doc.id}')">Delete</button>
+    `;
+  taskList.appendChild(taskItem);
+}
+
+db.collection("tasks")
+  .orderBy("timestamp", "desc")
+  .onSnapshot((snapshot) => {
+    const changes = snapshot.docChanges();
+    changes.forEach((change) => {
+      if (change.type === "added") {
+        renderTasks(change.doc);
+      }
+    });
+  });
+
+function deleteTask(id) {
+  db.collection("tasks").doc(id).delete();
+}
